@@ -165,10 +165,9 @@ def main():
         if not path.exists():
             path.mkdir()
 
-    with lzma.open(output, mode='w') as fobj, tqdm() as progress:
-        fobj = io.TextIOWrapper(fobj, encoding=encoding)
+    fobj = io.TextIOWrapper(lzma.open(output, mode='w'), encoding=encoding)
+    with tqdm() as progress:
         counter, writer = 0, None
-
         for year in sorted(years, reverse=True):
             progress.desc = str(year)
             table = create_table(year, download_path)
