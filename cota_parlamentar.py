@@ -7,6 +7,7 @@ from collections import OrderedDict
 
 import requests
 import rows
+from rows.utils import download_file, CsvLazyDictWriter
 from tqdm import tqdm
 
 
@@ -54,10 +55,8 @@ class DocumentField(rows.fields.TextField):
 def load_file(year, download_path, encoding="utf-8"):
     filename = download_path / f"Ano-{year}.csv.zip"
     if not filename.exists():
-        url = f'http://www.camara.leg.br/cotas/{filename.name}'
-        response = requests.get(url)
-        with open(filename, mode='wb') as fobj:
-            fobj.write(response.content)
+        url = f"http://www.camara.leg.br/cotas/{filename.name}"
+        download_file(url, filename=filename, progress=True)
 
     zip_file = zipfile.ZipFile(filename)
     if year == 2011:
@@ -150,25 +149,18 @@ def main():
         if not path.exists():
             path.mkdir()
 
-    fobj = io.TextIOWrapper(lzma.open(output, mode='w'), encoding=encoding)
-    with tqdm() as progress:
-        counter, writer = 0, None
-        for year in sorted(years, reverse=True):
-            progress.desc = str(year)
-            table = create_table(year, download_path)
-            header = table.field_names
-            for row in table._rows:
-                row = dict(zip(header, row))
-                if writer is None:
-                    writer = csv.DictWriter(fobj, fieldnames=header)
-                    writer.writeheader()
-                writer.writerow(row)
-                counter += 1
-                progress.n = counter
-                progress.refresh()
-            progress.n = counter
-            progress.refresh()
+    years = (2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018)
+    writer = CsvLazyDictWriter(output)
+    for year in sorted(years, reverse=True):
+        print(year)
+        table = create_table(year, download_path)
+        header = table.field_names
+        for row in tqdm(
+            table._rows, desc="Extracting and exporting data", unit=" rows"
+        ):
+            row = dict(zip(header, row))
+            writer.writerow(row)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
