@@ -108,7 +108,7 @@ FINAL_SCHEMA = OrderedDict(
 )
 
 
-def open_file(year, filename, encoding="utf-8"):
+def open_file(year, filename, encoding="utf-8-sig"):
     zip_file = zipfile.ZipFile(filename)
     assert (
         len(zip_file.filelist) == 1
