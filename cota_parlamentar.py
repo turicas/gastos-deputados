@@ -48,10 +48,13 @@ class MoneyField(rows.fields.TextField):
 
 
 class DocumentField(rows.fields.TextField):
+    chars_to_remove = (" ", ".", "-", "/")
+
     @classmethod
     def deserialize(cls, value):
-        value = value.replace(" ", "").replace(".", "").replace("-", "").strip()
-        return super().deserialize(value)
+        for char in cls.chars_to_remove:
+            value = value.replace(char, "")
+        return super().deserialize(value.strip())
 
 
 # TODO: may read the schema from a file
