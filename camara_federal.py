@@ -54,6 +54,8 @@ class DocumentField(rows.fields.TextField):
 def get_schema():
     schema = load_schema("schema.csv")
     # `load_schema` does not support custom fields yet so we must force it
+    # TODO: pass `context` to `load_schema` so we don't need to override
+    # 'txtcnpjcpf' type.
     schema["txtcnpjcpf"] = DocumentField
     return schema
 
@@ -80,7 +82,9 @@ def dict_to_lower(dictionary):
 
 def read_file(year, filename):
     fobj = open_file(year, filename)
-    reader = csv.DictReader(fobj, delimiter=";")
+    reader = csv.DictReader(
+        fobj, delimiter=";"
+    )  # TODO: may detect dialect automatically
     schema = get_schema()
     for row in reader:
         # TODO: may change key names in future instead of only moving to lowercase
@@ -96,10 +100,10 @@ def read_file(year, filename):
         }
 
 
-class CotaParlamentarCamaraSpider(Spider):
+class CotaParlamentarCamaraFederalSpider(Spider):
 
-    name = "cota-parlamentar-camara"
-    download_path = Path("./data/download")
+    name = "cota-parlamentar-camara-federal"
+    download_path = Path("./data/download")  # TODO: use settings?
 
     def __init__(self, years=None):
         super().__init__()

@@ -24,12 +24,12 @@ Para capturar todos os anos:
 Você também pode executar diretamente o spider do scrapy:
 
 ```bash
-scrapy runspider cota_parlamentar --loglevel=INFO -o cota-parlamentar.csv
+scrapy runspider camara_federal.py --loglevel=INFO -o cota-parlamentar-camara-federal.csv
 ```
 
 Caso queira apenas alguns anos, passe o parâmetro `-a years=XXX`, com os
 valores separados por vírgula, exemplo:
 
 ```bash
-scrapy runspider cota_parlamentar -a years=2015,2016,2017,2018 --loglevel=INFO -o cota-parlamentar-2015-2018.csv
+scrapy runspider camara_federal.py -a years=2015,2016,2017,2018 --loglevel=INFO -o cota-parlamentar-2015-2018.csv
 ```
