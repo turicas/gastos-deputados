@@ -1,5 +1,6 @@
+https://github.com/turicas/rows/archive/develop.zip
 requests
-rows>=0.4.1
+requests-cache
 scrapy
 six
 tqdm
